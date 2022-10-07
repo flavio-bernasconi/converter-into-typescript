@@ -2,6 +2,8 @@ import { useState } from "react";
 import { CopyBlock, dracula } from "react-code-blocks";
 import "./App.css";
 
+type UnknownObject = { [key: string]: unknown };
+
 const mockArray = [
   {
     postId: 1,
@@ -62,7 +64,7 @@ export const converter = (object: any) => {
   if (object === null) return;
 
   const res = Object.entries(object).reduce(
-    (acc: { [key: string]: unknown }, [key, value]: [string, unknown]) => {
+    (acc: UnknownObject, [key, value]: [string, unknown]) => {
       if (typeof value === "string" || typeof value === "number") {
         console.log(value, Object.keys(object));
 
@@ -103,7 +105,7 @@ export const converter = (object: any) => {
   return res;
 };
 
-const compareObjects = (obj1: unknown[], obj2: unknown[]) => {
+const compareObjects = (obj1: UnknownObject, obj2: UnknownObject) => {
   const x = Object.keys(obj1).length > Object.keys(obj2).length;
   const longerObj = x ? obj1 : obj2;
   const shorterObj = x ? obj2 : obj1;
@@ -119,10 +121,17 @@ const compareObjects = (obj1: unknown[], obj2: unknown[]) => {
   return { optionalKeys, requiredKeys };
 };
 
-function getKeys(arr: unknown[]): {
+function getKeys(arr: UnknownObject[]): {
   optionalKeys: string[];
   requiredKeys: string[];
 } {
+  if (!arr) {
+    return {
+      optionalKeys: [] as string[],
+      requiredKeys: [] as string[],
+    };
+  }
+
   const optionalKeysUnique = new Set();
   const requiredKeysUnique = new Set();
   for (var i = 1; i < arr.length; i++) {
@@ -136,7 +145,7 @@ function getKeys(arr: unknown[]): {
   };
 }
 
-function getItemWithAllKeys(arr: unknown[], optionalKeys: string[]) {
+function getItemWithAllKeys(arr: UnknownObject[], optionalKeys: string[]) {
   let res = null;
   for (let index = 0; index < arr.length; index++) {
     const item = arr[index];
