@@ -1,0 +1,9 @@
+.App {
+ display: flex;
+}
+.App > div {
+ width: calc(100% /2 - 200px );
+ min-width: 500px;
+ margin: 0 auto
+}
+
